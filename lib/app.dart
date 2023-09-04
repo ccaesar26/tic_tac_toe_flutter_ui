@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tic_tac_toe_flutter_ui/game/cubit/game_cubit.dart';
 import 'package:tic_tac_toe_flutter_ui/game/game.dart';
@@ -26,6 +27,10 @@ class TicTacToeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Tic Tac Toe',
       theme: ThemeData.from(
