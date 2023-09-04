@@ -36,6 +36,26 @@ class GameCubit extends Cubit<GameState> {
       ));
     });
     //_game.logPath = 'game_cubit.log';
+    _game.timerSeconds = 10;
+    _game.onTimerTickFunction = (Duration remaining) {
+      emit(GameInProgress(
+        board: _game.board,
+        currentPlayer: _game.currentPlayer,
+        remaining: remaining,
+      ));
+    };
+    _game.onTimerEndFunction = () {
+      switch (_game.currentPlayer) {
+        case Mark.X:
+          emit(GameWon(Mark.O));
+          break;
+        case Mark.O:
+          emit(GameWon(Mark.X));
+          break;
+        default:
+          break;
+      }
+    };
   }
 
   void makeMark(Position position) {
@@ -58,4 +78,8 @@ class GameCubit extends Cubit<GameState> {
   }
 
   set strategy(ModeType mode) => _game.strategy = mode.strategy;
+
+  void startTimer() => _game.startTimer();
+
+  void stopTimer() => _game.stopTimer();
 }

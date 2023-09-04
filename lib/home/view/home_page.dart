@@ -139,7 +139,7 @@ class HomeView extends StatelessWidget {
                     ),
                   ],
                   onChanged: (ModeType? val) =>
-                      context.read<HomeCubit>().setMode(val ?? ModeType.easy),
+                      GetIt.I<HomeCubit>().setMode(val ?? ModeType.easy),
                 )
               ],
             ),

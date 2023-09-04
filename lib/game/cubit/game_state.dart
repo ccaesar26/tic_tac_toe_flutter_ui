@@ -1,13 +1,15 @@
 part of 'game_cubit.dart';
 
 abstract class GameState extends Equatable {
-  const GameState(this.board, this.currentPlayer);
+  const GameState(this.board, this.currentPlayer,
+      [this.milliseconds = const Duration(milliseconds: 0)]);
 
   final Board board;
   final Mark currentPlayer;
+  final Duration milliseconds;
 
   @override
-  List<Object> get props => [board, currentPlayer];
+  List<Object> get props => [board, currentPlayer, milliseconds];
 }
 
 class GameInitial extends GameState {
@@ -15,11 +17,14 @@ class GameInitial extends GameState {
 }
 
 class GameInProgress extends GameState {
-
   const GameInProgress({
     required Board board,
     required Mark currentPlayer,
-  }) : super(board, currentPlayer);
+    Duration remaining = const Duration(milliseconds: 0),
+  }) : super(board, currentPlayer, remaining);
+
+  @override
+  List<Object> get props => [board, currentPlayer, milliseconds];
 }
 
 class GameWon extends GameState {
@@ -41,7 +46,8 @@ class GameDraw extends GameState {
 class GameError extends GameState {
   final String message;
 
-  GameError(this.message, Board board, Mark currentPlayer) : super(board, currentPlayer) {
+  GameError(this.message, Board board, Mark currentPlayer)
+      : super(board, currentPlayer) {
     print(message);
   }
 

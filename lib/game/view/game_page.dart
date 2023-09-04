@@ -23,10 +23,16 @@ class GameView extends StatelessWidget {
     return Scaffold(
       body: BlocConsumer<GameCubit, GameState>(
         bloc: GetIt.I<GameCubit>(),
-        listenWhen: (prev, curr) =>
-            prev is GameInProgress && (curr is GameWon || curr is GameDraw),
+        // listenWhen: (prev, curr) =>
+        //     prev is GameInProgress && (curr is GameWon || curr is GameDraw),
         listener: (context, state) {
           if (state is GameWon || state is GameDraw) {
+            String message;
+            if (state is GameWon) {
+              message = '${state.winner} won!';
+            } else {
+              message = 'It\'s a draw!';
+            }
             showDialog<void>(
               barrierDismissible: false,
               context: context,
@@ -34,10 +40,10 @@ class GameView extends StatelessWidget {
                 onWillPop: () async => false,
                 child: AlertDialog(
                   content: Text(
-                    'Game Over!\nDo you want to play again?',
+                    '$message\nDo you want to play again?',
                     style: GoogleFonts.poppins(
                       textStyle: const TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 18.0,
                       ),
                     ),
                   ),
@@ -57,6 +63,8 @@ class GameView extends StatelessWidget {
                       ),
                       onPressed: () {
                         GetIt.I<GameCubit>().reset();
+                        GetIt.I<GameCubit>().stopTimer();
+                        GetIt.I<GameCubit>().startTimer();
                         Navigator.pop(context, 'Yes');
                       },
                     ),
@@ -68,6 +76,7 @@ class GameView extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
+                          GetIt.I<GameCubit>().stopTimer();
                           Navigator.pop(context, 'No');
                           Navigator.pop(context);
                         }),
@@ -87,35 +96,58 @@ class GameView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Flex(
-                        direction: Axis.horizontal,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Current Player:',
-                            style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
+                      Container(
+                        width: 320,
+                        height: 64,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Text(
+                                'Current Player:',
+                                style: GoogleFonts.poppins(
+                                  textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            width: 52,
-                            height: 52,
-                            padding: const EdgeInsets.only(
-                              top: 8.0,
-                              bottom: 12.0,
-                              left: 8.0,
-                              right: 8.0,
+                            Container(
+                              width: 46,
+                              height: 52,
+                              padding: const EdgeInsets.only(
+                                top: 8.0,
+                                bottom: 12.0,
+                                left: 8.0,
+                                right: 6.0,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/images/${state.currentPlayer.toString().toLowerCase()}.svg',
+                              ),
                             ),
-                            child: SvgPicture.asset(
-                              'assets/images/${state.currentPlayer.toString().toLowerCase()}.svg',
-                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 312,
+                        child: LinearProgressIndicator(
+                          value: state.milliseconds.inMilliseconds / 10000,
+                          minHeight: 8,
+                          backgroundColor: Colors.deepPurple.shade400,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            state.milliseconds.inMilliseconds > 3000
+                                ? Colors.yellow
+                                : Colors.red,
                           ),
-                        ],
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
                       ),
                       Container(
                         width: 320,
@@ -181,6 +213,8 @@ class GameView extends StatelessWidget {
                               child: IconButton(
                                 onPressed: () {
                                   GetIt.I<GameCubit>().reset();
+                                  GetIt.I<GameCubit>().stopTimer();
+                                  GetIt.I<GameCubit>().startTimer();
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/images/reset.svg',

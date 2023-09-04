@@ -16,8 +16,8 @@ class TicTacToeApp extends StatelessWidget {
       case '/':
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/game':
-        // GetIt.I<GameCubit>().reset();
-        // GetIt.I<GameCubit>().strategy = settings.arguments as ModeType;
+        GetIt.I<GameCubit>().stopTimer();
+        GetIt.I<GameCubit>().startTimer();
         return MaterialPageRoute(builder: (context) =>  GamePage());
       default:
       // Handle unknown routes here
