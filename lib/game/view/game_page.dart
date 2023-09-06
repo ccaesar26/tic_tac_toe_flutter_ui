@@ -240,6 +240,33 @@ class GameView extends StatelessWidget {
                               ),
                               child: IconButton(
                                 onPressed: () {
+                                  GetIt.I<GameCubit>().switchTimer();
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/images/play_pause.svg',
+                                  width: 86,
+                                  height: 86,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 64,
+                              height: 64,
+                              margin: const EdgeInsets.all(18.0),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.yellow,
+                                    Colors.yellow.shade700,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: IconButton(
+                                onPressed: () {
+                                  GetIt.I<GameCubit>().stopTimer();
                                   Navigator.pop(context);
                                 },
                                 icon: SvgPicture.asset(
@@ -248,10 +275,6 @@ class GameView extends StatelessWidget {
                                   height: 86,
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 100,
-                              height: 100,
                             ),
                           ],
                         ),

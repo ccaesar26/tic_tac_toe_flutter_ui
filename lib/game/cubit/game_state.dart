@@ -30,14 +30,23 @@ class GameInProgress extends GameState {
 class GameWon extends GameState {
   final Mark winner;
 
-  GameWon(this.winner) : super(Board(3), winner);
+  const GameWon({
+    required this.winner,
+    required Board board,
+    required Mark currentPlayer,
+    required Duration remaining,
+  }) : super(board, currentPlayer, remaining);
 
   @override
   List<Object> get props => [winner];
 }
 
 class GameDraw extends GameState {
-  GameDraw() : super(Board(3), Mark.X);
+  const GameDraw({
+    required Mark currentPlayer,
+    required Board board,
+    required Duration remaining,
+  }) : super(board, currentPlayer, remaining);
 
   @override
   List<Object> get props => [];
